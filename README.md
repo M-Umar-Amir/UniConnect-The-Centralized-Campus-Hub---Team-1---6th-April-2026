@@ -9,6 +9,17 @@ The development of UniConnect follows a **modular, phase-by-phase architecture**
 
 ---
 
+## 1.1 Repository Structure
+
+The repository is split into clear top-level modules so each area can evolve independently:
+
+- `frontend` - UI, pages, layouts, and client-side services
+- `backend` - API controllers, routes, middleware, and business logic
+- `database` - schemas, migrations, seeds, and backups
+- `qa` - test plans, test cases, bug reports, and release reports
+
+---
+
 ## 2. User Roles & Authentication
 
 Three primary user roles are defined, each with distinct permissions:
