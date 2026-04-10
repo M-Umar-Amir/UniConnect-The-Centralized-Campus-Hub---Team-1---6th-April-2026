@@ -218,11 +218,10 @@ Uses **MongoDB** for scalability.
 
 | Role | Members |
 |------|--------|
-| Project Lead | Umar |
-| Frontend Developer | Emaan, Umar |
-| Backend Developer | Feras, Sarim, Umar |
-| Database & Integration | Feras, Sarim, Umar |
-| QA & Documentation | Emaan, Umar |
+Emaan, Israr, Hannan, Umar - Frontend Developer
+Sarim, Feras, Alina, Hannan, Umar - Backend Developer
+Sarim, Feras, Amna, Hannan, Umar - Database & Integration
+Emaan, Huzaifa, Israr, Hannan, Umar - QA & Documentation
 
 ---
 
