@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import morgan from "morgan";
+import mongoose from "mongoose";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
@@ -15,19 +16,38 @@ app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 app.use(morgan("dev"));
 
-app.get("/health", async (req, res) => {
-  const status = { status: "ok", service: "uniconnect-backend" };
+app.get("/", (req, res) => {
+  const databaseReady = mongoose.connection.readyState === 1;
 
-  // Cloudinary connection check
+  res.status(databaseReady ? 200 : 503).json({
+    success: databaseReady,
+    service: "uniconnect-backend",
+    message: "UniConnect backend is running",
+    health: "/health",
+    database: databaseReady ? "connected" : "disconnected"
+  });
+});
+
+app.get("/health", async (req, res) => {
+  const databaseReady = mongoose.connection.readyState === 1;
+  let cloudinaryStatus = "not configured";
+
   try {
     const { cloudinary } = await import("./config/cloudinary.js");
     const result = await cloudinary.api.ping();
-    status.cloudinary = result.status === "ok" ? "connected" : "error";
+    cloudinaryStatus = result.status === "ok" ? "connected" : "error";
   } catch {
-    status.cloudinary = "not configured";
+    cloudinaryStatus = "not configured";
   }
 
-  res.json(status);
+  const serviceReady = databaseReady && cloudinaryStatus !== "error";
+
+  res.status(serviceReady ? 200 : 503).json({
+    status: serviceReady,
+    service: "uniconnect-backend",
+    database: databaseReady ? "connected" : "disconnected",
+    cloudinary: cloudinaryStatus
+  });
 });
 
 app.use("/api/auth", authRoutes);

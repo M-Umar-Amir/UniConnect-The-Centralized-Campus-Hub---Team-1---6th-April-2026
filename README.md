@@ -238,6 +238,71 @@ Emaan, Huzaifa, Israr, Hannan, Umar - QA & Documentation
 
 ## 15. Final Deliverables
 
+---
+
+## 16. Local Setup Guide
+
+Use this order to run UniConnect on a teammate's machine.
+
+### 16.1 Prerequisites
+- Node.js 18+ or 20+
+- npm
+- Docker Desktop or a local MongoDB 7 install
+
+### 16.2 Start MongoDB
+If MongoDB is not already running locally, use Docker:
+
+```bash
+docker run -d \
+  --name uniconnect-mongo \
+  -p 27017:27017 \
+  mongo:7
+```
+
+If the container already exists, start it with:
+
+```bash
+docker start uniconnect-mongo
+```
+
+### 16.3 Start the backend
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+Backend defaults:
+- `http://localhost:5000`
+- MongoDB connection: `mongodb://localhost:27017/uniconnect`
+
+### 16.4 Start the frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open the Vite URL shown in the terminal, usually `http://localhost:5173`.
+
+### 16.5 Optional demo seed
+
+```bash
+cd backend
+npm run seed:demo
+```
+
+Demo login:
+- Email: `amina.khan@uniconnect.test`
+- Password: `password123`
+
+### 16.6 Quick checks
+- `GET /health` should report `database: connected`
+- `/home` should load the app shell
+- `/notifications` should show seeded demo notifications after login
+
 ### Source Code
 - Private GitHub repository  
 - Full commit history  

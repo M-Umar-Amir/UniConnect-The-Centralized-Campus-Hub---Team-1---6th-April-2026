@@ -22,6 +22,29 @@ This folder contains the server-side API for UniConnect.
 - Install dependencies: `npm install`
 - Start server: `npm run start`
 - Dev mode: `npm run dev`
+- Demo seed: `npm run seed:demo`
+- Tests: `npm test`
+
+### Local development order
+1. Start MongoDB on `mongodb://localhost:27017/uniconnect`
+2. Run the backend from this folder with `npm run dev`
+3. Run the frontend from `../frontend` with `npm run dev`
+
+### MongoDB with Docker
+If MongoDB is not installed locally, start it with:
+
+```bash
+docker run -d \
+	--name uniconnect-mongo \
+	-p 27017:27017 \
+	mongo:7
+```
+
+If you already created the container, start it with:
+
+```bash
+docker start uniconnect-mongo
+```
 
 ### Environment variables
 - `PORT` (default: `5000`)

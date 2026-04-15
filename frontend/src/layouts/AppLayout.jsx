@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { notificationService } from "../services/notificationService";
+import { resolveNotificationTarget } from "../utils/notificationTargets";
 
 export default function AppLayout() {
   const [recentNotifications, setRecentNotifications] = useState([]);
@@ -34,7 +35,7 @@ export default function AppLayout() {
         }}
         onOpenNotification={async (item) => {
           await notificationService.markAsRead(item._id || item.id);
-          navigate(item.targetUrl || "/notifications");
+          navigate(resolveNotificationTarget(item));
         }}
       />
       <main className="page-wrap">

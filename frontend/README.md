@@ -24,6 +24,17 @@ This folder contains the user-facing application for UniConnect.
 - Install dependencies: `npm install`
 - Start dev server: `npm run dev`
 - Build: `npm run build`
+- Tests: `npm test`
+
+### Local development order
+1. Start MongoDB on `mongodb://localhost:27017/uniconnect`
+2. Start the backend from `../backend` with `npm run dev`
+3. Start the frontend from this folder with `npm run dev`
+
+### Notes
+- The frontend uses a Vite proxy for `/api` requests to `http://localhost:5000`
+- In Codespaces, use the forwarded Vite URL shown in the terminal
+- For broader network access, run `npm run dev -- --host 0.0.0.0`
 
 ### Routes included
 - `/home`

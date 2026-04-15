@@ -72,6 +72,8 @@ select {
 .search-dropdown {
   position: absolute;
   top: 100%;
+  left: 0;
+  right: 0;
   width: 100%;
   background: #fff;
   border: 1px solid var(--border);
@@ -80,6 +82,32 @@ select {
   margin: 0.4rem 0 0;
   padding: 0.4rem;
   list-style: none;
+  z-index: 1000;
+}
+
+.search-dropdown li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search-dropdown button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.6rem 0.8rem;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.search-dropdown button:hover {
+  background: #f0f0f0;
+  color: var(--brand);
 }
 
 .page-wrap {
@@ -299,4 +327,53 @@ select {
   .notification-row {
     grid-template-columns: 44px 1fr;
   }
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-container h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--brand);
+}
+
+.content-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.content-card h2 {
+  margin: 0 0 0.8rem 0;
+  font-size: 1.5rem;
+  color: var(--text);
+}
+
+.content-card p {
+  margin: 0.6rem 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  margin-top: 0.8rem;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
 }

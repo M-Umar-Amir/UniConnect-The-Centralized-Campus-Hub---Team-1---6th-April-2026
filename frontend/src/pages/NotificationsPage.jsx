@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import EmptyState from "../components/EmptyState";
 import SkeletonCard from "../components/SkeletonCard";
 import { notificationService } from "../services/notificationService";
+import { resolveNotificationTarget } from "../utils/notificationTargets";
 
 const filters = ["all", "likes", "comments", "follows", "events", "startups", "announcements"];
 
@@ -30,7 +31,7 @@ export default function NotificationsPage() {
 
   async function handleRowClick(item) {
     await notificationService.markAsRead(item._id || item.id);
-    navigate(item.targetUrl || "/home");
+    navigate(resolveNotificationTarget(item));
   }
 
   return (

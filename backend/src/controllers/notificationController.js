@@ -1,4 +1,5 @@
 import { Notification } from "../models/Notification.js";
+import { resolveNotificationTarget } from "../utils/notificationTargets.js";
 
 const filterMap = {
   all: null,
@@ -9,6 +10,15 @@ const filterMap = {
   startups: "startup",
   announcements: "announcement"
 };
+
+function serializeNotification(notification) {
+  const plain = typeof notification.toObject === "function" ? notification.toObject() : notification;
+
+  return {
+    ...plain,
+    targetUrl: resolveNotificationTarget(plain)
+  };
+}
 
 export async function listNotifications(req, res, next) {
   try {
@@ -29,7 +39,13 @@ export async function listNotifications(req, res, next) {
 
     const unreadCount = await Notification.countDocuments({ recipient: req.user._id, isRead: false });
 
-    res.json({ success: true, items, page, limit, unreadCount });
+    res.json({
+      success: true,
+      items: items.map(serializeNotification),
+      page,
+      limit,
+      unreadCount
+    });
   } catch (error) {
     next(error);
   }
@@ -46,7 +62,11 @@ export async function recentNotifications(req, res, next) {
 
     const unreadCount = items.filter((item) => !item.isRead).length;
 
-    res.json({ success: true, items, unreadCount });
+    res.json({
+      success: true,
+      items: items.map(serializeNotification),
+      unreadCount
+    });
   } catch (error) {
     next(error);
   }
@@ -64,7 +84,7 @@ export async function markNotificationRead(req, res, next) {
       return res.status(404).json({ success: false, message: "Notification not found" });
     }
 
-    res.json({ success: true, item });
+    res.json({ success: true, item: serializeNotification(item) });
   } catch (error) {
     next(error);
   }

@@ -12,7 +12,7 @@ export default function Navbar({ notifications = [], unreadCount = 0, onMarkAllR
     return [
       { id: "events", label: `Search events for \"${query}\"`, to: "/events" },
       { id: "startups", label: `Search startups for \"${query}\"`, to: "/startups" },
-      { id: "users", label: `Search people for \"${query}\"`, to: "/profile/me" }
+      { id: "users", label: `Search people for \"${query}\"`, to: `/profile/me?query=${encodeURIComponent(query)}` }
     ];
   }, [query]);
 
@@ -40,7 +40,10 @@ export default function Navbar({ notifications = [], unreadCount = 0, onMarkAllR
           <ul className="search-dropdown">
             {mockResults.map((result) => (
               <li key={result.id}>
-                <button onClick={() => navigate(result.to)}>{result.label}</button>
+                 <button onClick={() => {
+                   navigate(result.to);
+                   setQuery("");
+                 }}>{result.label}</button>
               </li>
             ))}
           </ul>
@@ -58,7 +61,7 @@ export default function Navbar({ notifications = [], unreadCount = 0, onMarkAllR
             onSelect={onOpenNotification}
           />
         )}
-        <button className="avatar-menu">👤</button>
+        <button className="avatar-menu" onClick={() => navigate("/settings")}>👤</button>
       </div>
     </nav>
   );
