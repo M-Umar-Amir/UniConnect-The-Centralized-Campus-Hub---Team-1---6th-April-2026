@@ -1,0 +1,12 @@
+{
+  "collection": "tags",
+  "fields": {
+    "tagName": "string",
+    "category": "Event | Startup",
+    "usageCount": "number"
+  },
+  "queries": {
+    "add_tag": "{ \"tagName\": \"NewTag\", \"category\": \"Event\", \"usageCount\": 0 }",
+    "find_event_tags": "{ \"category\": \"Event\" }"
+  }
+}

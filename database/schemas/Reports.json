@@ -1,0 +1,13 @@
+{
+  "collection": "reports",
+  "fields": {
+    "targetId": "objectId",
+    "targetType": "Event | User | Startup",
+    "reason": "string",
+    "status": "Pending | Resolved"
+  },
+  "queries": {
+    "view_pending": "{ \"status\": \"Pending\" }",
+    "resolve_report": "{ \"$set\": { \"status\": \"Resolved\" } }"
+  }
+}

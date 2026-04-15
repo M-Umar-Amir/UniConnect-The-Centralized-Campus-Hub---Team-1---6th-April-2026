@@ -1,0 +1,15 @@
+{
+  "collection": "users",
+  "fields": {
+    "name": "string",
+    "email": "string",
+    "role": "student | society_admin | super_admin",
+    "isBlocked": "boolean",
+    "isActive": "boolean"
+  },
+  "queries": {
+    "block_user": "{ \"$set\": { \"isBlocked\": true } }",
+    "soft_delete": "{ \"$set\": { \"isActive\": false } }",
+    "get_all_admins": "{ \"role\": \"super_admin\" }"
+  }
+}

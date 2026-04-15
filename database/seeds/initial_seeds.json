@@ -1,0 +1,12 @@
+{
+  "users_seed": [
+    { "name": "Admin User", "email": "admin@uniconnect.edu", "role": "super_admin", "isBlocked": false, "isActive": true }
+  ],
+  "tags_seed": [
+    { "tagName": "Workshop", "category": "Event", "usageCount": 0 },
+    { "tagName": "Pitching", "category": "Startup", "usageCount": 0 }
+  ],
+  "reports_seed": [
+    { "targetType": "Event", "reason": "Inappropriate content", "status": "Pending" }
+  ]
+}
