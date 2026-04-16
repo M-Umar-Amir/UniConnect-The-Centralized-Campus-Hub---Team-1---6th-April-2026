@@ -7,7 +7,9 @@ const filterMap = {
   comments: "comment",
   follows: "follow",
   events: "event",
+  event_reg: "event_reg",
   startups: "startup",
+  startup_match: "startup_match",
   announcements: "announcement"
 };
 
@@ -75,7 +77,7 @@ export async function recentNotifications(req, res, next) {
 export async function markNotificationRead(req, res, next) {
   try {
     const item = await Notification.findOneAndUpdate(
-      { _id: req.params.notificationId, recipient: req.user._id },
+      { _id: req.params.id || req.params.notificationId, recipient: req.user._id },
       { isRead: true },
       { new: true }
     );

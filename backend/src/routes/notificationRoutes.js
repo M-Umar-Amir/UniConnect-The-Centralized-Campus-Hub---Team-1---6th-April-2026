@@ -13,6 +13,6 @@ router.use(requireAuth);
 router.get("/", listNotifications);
 router.get("/recent", recentNotifications);
 router.patch("/read-all", markAllRead);
-router.patch("/:notificationId/read", markNotificationRead);
+router.patch("/:id/read", markNotificationRead);
 
 export default router;
