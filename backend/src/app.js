@@ -12,6 +12,8 @@ import eventPostRoutes from "./routes/eventPostRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import admineventRoutes from "./routes/admineventRoutes.js";
+import tagRoutes from "./routes/tagRoutes.js";
+
 
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
@@ -65,6 +67,7 @@ app.use("/api/event-posts", eventPostRoutes);
 app.use("/api/uploads", uploadRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api", admineventRoutes);
+app.use("/api/tags", tagRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
