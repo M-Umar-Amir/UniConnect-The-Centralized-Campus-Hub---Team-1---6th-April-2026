@@ -6,8 +6,15 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
+import eventRoutes from "./routes/eventRoutes.js";
+import startupRoutes from "./routes/startupRoutes.js";
 import eventPostRoutes from "./routes/eventPostRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import admineventRoutes from "./routes/admineventRoutes.js";
+import tagRoutes from "./routes/tagRoutes.js";
+
+
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -54,8 +61,13 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/posts", postRoutes);
-app.use("/api/events", eventPostRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/startups", startupRoutes);
+app.use("/api/event-posts", eventPostRoutes);
 app.use("/api/uploads", uploadRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api", admineventRoutes);
+app.use("/api/tags", tagRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

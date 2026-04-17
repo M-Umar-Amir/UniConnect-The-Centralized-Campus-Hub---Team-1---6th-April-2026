@@ -3,7 +3,9 @@ const targetByType = {
   comment: (item) => item.targetUrl || "/notifications",
   follow: (item) => item.targetUrl || "/notifications",
   event: (item) => item.targetUrl || "/events",
+  event_reg: (item) => item.targetUrl || "/events",
   startup: (item) => item.targetUrl || "/startups",
+  startup_match: (item) => item.targetUrl || "/startups",
   announcement: (item) => item.targetUrl || "/notifications"
 };
 

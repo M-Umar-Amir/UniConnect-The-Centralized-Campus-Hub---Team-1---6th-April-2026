@@ -6,7 +6,16 @@ const notificationSchema = new mongoose.Schema(
     actor: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     type: {
       type: String,
-      enum: ["like", "comment", "follow", "event", "startup", "announcement"],
+      enum: [
+        "like",
+        "comment",
+        "follow",
+        "event",
+        "startup",
+        "announcement",
+        "event_reg",
+        "startup_match"
+      ],
       required: true,
       index: true
     },

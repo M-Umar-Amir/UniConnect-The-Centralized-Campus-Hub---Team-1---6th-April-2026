@@ -8,7 +8,9 @@
     "start": "node src/server.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "seed:demo": "node src/scripts/seedDemoData.js"
+    "seed:demo": "node src/scripts/seedDemoData.js",
+    "seed:events": "node ../database/seeds/seed-events.mjs",
+    "seed:startups": "node ../database/seeds/seed-startups.mjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -61,6 +61,7 @@ const userSchema = new mongoose.Schema(
     },
     isVerified: { type: Boolean, default: false },
     tokenVersion: { type: Number, default: 0 },
+    isBlocked: { type: Boolean, default: false },
     notificationSettings: { type: notificationSettingsSchema, default: () => ({}) },
     privacySettings: { type: privacySettingsSchema, default: () => ({}) }
   },
