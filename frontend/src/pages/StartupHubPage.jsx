@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 // ─── Mock Data ───────────────────────────────────────────────────────────────
 const CURRENT_USER = { id: "u1", name: "Ali Hassan", role: "founder" };
@@ -138,10 +138,10 @@ const Input = ({ label, value, onChange, placeholder, maxLength, type = "text", 
   </div>
 );
 
-const Textarea = ({ label, value, onChange, placeholder, rows = 4 }) => (
+const Textarea = ({ label, value, onChange, placeholder, rows = 4, inputRef = null }) => (
   <div style={{ marginBottom: 16 }}>
     {label && <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 5 }}>{label}</label>}
-    <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={rows}
+    <textarea ref={inputRef} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={rows}
       style={{ width: "100%", border: "1.5px solid #E5E7EB", borderRadius: 8, padding: "9px 12px", fontSize: 13, color: "#111827", outline: "none", resize: "vertical", boxSizing: "border-box", fontFamily: "inherit" }} />
   </div>
 );
@@ -351,10 +351,12 @@ const StartupDetail = ({ startup, currentUser, onBack, onEdit }) => {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [updateTitle, setUpdateTitle] = useState("");
   const [updateBody, setUpdateBody] = useState("");
+  const [editingUpdateId, setEditingUpdateId] = useState(null);
   const [updates, setUpdates] = useState(startup.updates);
   const [requests, setRequests] = useState(startup.requests);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
+  const commentInputRef = useRef(null);
 
   const isFounder = currentUser.id === startup.founder.id;
   const isMember = startup.team.some(t => t.name === currentUser.name);
@@ -369,10 +371,78 @@ const StartupDetail = ({ startup, currentUser, onBack, onEdit }) => {
   };
 
   const handlePublishUpdate = () => {
-    if (updateTitle && updateBody) {
-      setUpdates(u => [{ id: Date.now(), title: updateTitle, body: updateBody, date: new Date().toISOString().split("T")[0], likes: 0, comments: [] }, ...u]);
-      setUpdateTitle(""); setUpdateBody(""); setShowUpdateForm(false);
+    const normalizedTitle = updateTitle.trim();
+    const normalizedBody = updateBody.trim();
+
+    if (!normalizedTitle || !normalizedBody) {
+      return;
     }
+
+    if (editingUpdateId) {
+      setUpdates((items) => items.map((item) => (
+        item.id === editingUpdateId
+          ? { ...item, title: normalizedTitle, body: normalizedBody }
+          : item
+      )));
+    } else {
+      setUpdates((items) => [{
+        id: Date.now(),
+        title: normalizedTitle,
+        body: normalizedBody,
+        date: new Date().toISOString().split("T")[0],
+        likes: 0,
+        comments: []
+      }, ...items]);
+    }
+
+    setUpdateTitle("");
+    setUpdateBody("");
+    setEditingUpdateId(null);
+    setShowUpdateForm(false);
+  };
+
+  const handleShare = async () => {
+    const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+    const fallbackMessage = `Share this startup page: ${shareUrl}`;
+
+    if (!shareUrl) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      window.alert("Startup link copied to clipboard.");
+    } catch (error) {
+      window.alert(fallbackMessage);
+    }
+  };
+
+  const handleEditUpdate = (update) => {
+    setEditingUpdateId(update.id);
+    setUpdateTitle(update.title);
+    setUpdateBody(update.body);
+    setShowUpdateForm(true);
+  };
+
+  const handleDeleteUpdate = (updateId) => {
+    setUpdates((items) => items.filter((item) => item.id !== updateId));
+
+    if (editingUpdateId === updateId) {
+      setEditingUpdateId(null);
+      setUpdateTitle("");
+      setUpdateBody("");
+      setShowUpdateForm(false);
+    }
+  };
+
+  const handleUpdateLike = (updateId) => {
+    setUpdates((items) => items.map((item) => (
+      item.id === updateId ? { ...item, likes: (item.likes || 0) + 1 } : item
+    )));
+  };
+
+  const handleUpdateCommentClick = () => {
+    commentInputRef.current?.focus();
   };
 
   const handleRequestAction = (id, action) => {
@@ -417,7 +487,7 @@ const StartupDetail = ({ startup, currentUser, onBack, onEdit }) => {
           </div>
           <div style={{ display: "flex", gap: 10, flexShrink: 0 }}>
             <Button onClick={handleLike} variant={liked ? "primary" : "secondary"} size="sm">{liked ? "❤️" : "🤍"} {likeCount}</Button>
-            <Button variant="secondary" size="sm">🔗 Share</Button>
+            <Button onClick={handleShare} variant="secondary" size="sm">🔗 Share</Button>
             {isFounder && <Button onClick={onEdit} variant="ghost" size="sm">✏️ Edit</Button>}
           </div>
         </div>
@@ -521,8 +591,8 @@ const StartupDetail = ({ startup, currentUser, onBack, onEdit }) => {
                 <Input label="Update Title" value={updateTitle} onChange={setUpdateTitle} placeholder="What's new?" />
                 <Textarea label="Body" value={updateBody} onChange={setUpdateBody} placeholder="Share the details..." rows={3} />
                 <div style={{ display: "flex", gap: 8 }}>
-                  <Button onClick={handlePublishUpdate} size="sm">Publish</Button>
-                  <Button onClick={() => setShowUpdateForm(false)} size="sm" variant="secondary">Cancel</Button>
+                  <Button onClick={handlePublishUpdate} size="sm">{editingUpdateId ? "Save" : "Publish"}</Button>
+                  <Button onClick={() => { setShowUpdateForm(false); setEditingUpdateId(null); setUpdateTitle(""); setUpdateBody(""); }} size="sm" variant="secondary">Cancel</Button>
                 </div>
               </div>
             )}
@@ -535,11 +605,11 @@ const StartupDetail = ({ startup, currentUser, onBack, onEdit }) => {
             <div style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 8 }}>{u.date}</div>
             <p style={{ fontSize: 14, color: "#374151", lineHeight: 1.6, margin: 0 }}>{u.body}</p>
             <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-              <button style={{ background: "none", border: "none", fontSize: 13, color: "#6B7280", cursor: "pointer" }}>❤️ {u.likes}</button>
-              <button style={{ background: "none", border: "none", fontSize: 13, color: "#6B7280", cursor: "pointer" }}>💬 Comment</button>
+              <button onClick={() => handleUpdateLike(u.id)} style={{ background: "none", border: "none", fontSize: 13, color: "#6B7280", cursor: "pointer" }}>❤️ {u.likes || 0}</button>
+              <button onClick={handleUpdateCommentClick} style={{ background: "none", border: "none", fontSize: 13, color: "#6B7280", cursor: "pointer" }}>💬 Comment</button>
               {isFounder && <>
-                <button style={{ background: "none", border: "none", fontSize: 13, color: "#6B7280", cursor: "pointer" }}>✏️ Edit</button>
-                <button style={{ background: "none", border: "none", fontSize: 13, color: "#DC2626", cursor: "pointer" }}>🗑 Delete</button>
+                <button onClick={() => handleEditUpdate(u)} style={{ background: "none", border: "none", fontSize: 13, color: "#6B7280", cursor: "pointer" }}>✏️ Edit</button>
+                <button onClick={() => handleDeleteUpdate(u.id)} style={{ background: "none", border: "none", fontSize: 13, color: "#DC2626", cursor: "pointer" }}>🗑 Delete</button>
               </>}
             </div>
           </div>
@@ -549,7 +619,7 @@ const StartupDetail = ({ startup, currentUser, onBack, onEdit }) => {
       {/* Comments */}
       <DetailCard title="💬 Comments">
         <div style={{ marginBottom: 14 }}>
-          <Textarea label="Add a comment" value={comment} onChange={setComment} placeholder="Share your thoughts..." rows={2} />
+          <Textarea inputRef={commentInputRef} label="Add a comment" value={comment} onChange={setComment} placeholder="Share your thoughts..." rows={2} />
           <Button onClick={handleAddComment} size="sm" disabled={!comment.trim()}>Post Comment</Button>
         </div>
         {comments.length === 0 && <p style={{ color: "#9CA3AF", fontSize: 14 }}>No comments yet. Be the first!</p>}

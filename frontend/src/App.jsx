@@ -11,11 +11,14 @@ import NotificationsPage from "./pages/NotificationsPage";
 import SettingsPage      from "./pages/SettingsPage";
 import EventsPage        from "./pages/EventsPage";
 import StartupsPage      from "./pages/StartupsPage";
+import StartupHubPage    from "./pages/StartupHubPage";
+import AdminPanelPage    from "./pages/AdminPanelPage";
 import ProfilePage       from "./pages/ProfilePage";
 import SearchResultsPage from "./pages/SearchResultsPage";
-import EventDetailPage   from "./pages/EventDetailPage";
+import EventDetailLivePage from "./pages/EventDetailLivePage";
 import EventEditorPage   from "./pages/EventEditorPage";
 import ProfileEditPage   from "./pages/ProfileEditPage";
+import StartupDetailPage from "./pages/StartupDetailPage";
 
 // ── New: all auth pages from single file ──
 import {
@@ -96,9 +99,12 @@ export default function App() {
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/events"        element={<EventsPage />} />
         <Route path="/events/create" element={<EventEditorPage />} />
-        <Route path="/events/:id"    element={<EventDetailPage />} />
+        <Route path="/events/:id"    element={<EventDetailLivePage />} />
         <Route path="/events/:id/edit" element={<EventEditorPage />} />
+        <Route path="/startups/list" element={<StartupHubPage />} />
         <Route path="/startups"      element={<StartupsPage />} />
+        <Route path="/startups/:id"  element={<StartupDetailPage />} />
+        <Route path="/admin"         element={<AdminPanelPage />} />
         <Route path="/profile/me"    element={<ProfilePage />} />
         <Route path="/profile/edit"  element={<ProfileEditPage />} />
         <Route path="/profile/:id"   element={<ProfilePage />} />

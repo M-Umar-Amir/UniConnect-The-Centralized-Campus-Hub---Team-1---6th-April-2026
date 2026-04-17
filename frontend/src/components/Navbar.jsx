@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import NotificationDropdown from "./NotificationDropdown";
 import ULogo from "../assets/ULogo.png";
@@ -28,6 +28,8 @@ export default function Navbar({ notifications = [], unreadCount = 0, onMarkAllR
   const [query, setQuery] = useState("");
   const [bellOpen, setBellOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const bellMenuRef = useRef(null);
+  const profileMenuRef = useRef(null);
   const profile = getStoredProfile();
 
   const groupedResults = useMemo(() => {
@@ -51,13 +53,18 @@ export default function Navbar({ notifications = [], unreadCount = 0, onMarkAllR
   }, [location.pathname]);
 
   useEffect(() => {
-    function handleOutsideClick() {
-      setBellOpen(false);
-      setMenuOpen(false);
+    function handleOutsideClick(event) {
+      if (bellMenuRef.current && !bellMenuRef.current.contains(event.target)) {
+        setBellOpen(false);
+      }
+
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
     }
 
-    window.addEventListener("click", handleOutsideClick);
-    return () => window.removeEventListener("click", handleOutsideClick);
+    window.addEventListener("mousedown", handleOutsideClick);
+    return () => window.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
   function submitSearch(event) {
@@ -119,21 +126,23 @@ export default function Navbar({ notifications = [], unreadCount = 0, onMarkAllR
         ) : null}
       </form>
 
-      <div className="app-navbar__actions" onClick={(event) => event.stopPropagation()}>
-        <button className="app-icon-button" type="button" onClick={() => setBellOpen((current) => !current)}>
-          <span>Notifications</span>
-          {unreadCount > 0 ? <em>{unreadCount}</em> : null}
-        </button>
-        {bellOpen ? (
-          <NotificationDropdown
-            notifications={notifications}
-            unreadCount={unreadCount}
-            onMarkAllRead={onMarkAllRead}
-            onSelect={onOpenNotification}
-          />
-        ) : null}
+      <div className="app-navbar__actions">
+        <div ref={bellMenuRef}>
+          <button className="app-icon-button" type="button" onClick={() => setBellOpen((current) => !current)}>
+            <span>Notifications</span>
+            {unreadCount > 0 ? <em>{unreadCount}</em> : null}
+          </button>
+          {bellOpen ? (
+            <NotificationDropdown
+              notifications={notifications}
+              unreadCount={unreadCount}
+              onMarkAllRead={onMarkAllRead}
+              onSelect={onOpenNotification}
+            />
+          ) : null}
+        </div>
 
-        <div className="app-profile-menu">
+        <div className="app-profile-menu" ref={profileMenuRef}>
           <button className="app-avatar-button" type="button" onClick={() => setMenuOpen((current) => !current)}>
             <span className="app-avatar-button__avatar">
               {profile.avatarPreview ? <img src={profile.avatarPreview} alt="Profile avatar" /> : (profile.fullName || "U")[0]}
@@ -152,6 +161,11 @@ export default function Navbar({ notifications = [], unreadCount = 0, onMarkAllR
               <button type="button" onClick={() => navigate("/settings")}>
                 Settings
               </button>
+              {profile.role === "admin" ? (
+                <button type="button" onClick={() => navigate("/admin")}>
+                  Admin Panel
+                </button>
+              ) : null}
               <button type="button" onClick={handleLogout}>
                 Logout
               </button>

@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import EventCard from "../components/EventCard";
-import { events } from "../data/mockAppData";
+import { eventService } from "../services/eventService";
 
 const tagOptions = ["All", "Hackathon", "Startup", "Media", "Networking", "Expo", "Community"];
 const statusOptions = ["All", "upcoming", "ongoing", "past"];
@@ -52,12 +52,50 @@ function EventListRow({ event }) {
 export default function EventsPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [query, setQuery] = useState(searchParams.get("query") || "");
   const [selectedTag, setSelectedTag] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedType, setSelectedType] = useState("All");
   const [view, setView] = useState("grid");
   const role = getStoredRole();
+
+  useEffect(() => {
+    async function loadEvents() {
+      try {
+        setLoading(true);
+        setLoadError("");
+        const payload = await eventService.list(query);
+        const items = payload.items || [];
+        setEvents(
+          items.map((event) => ({
+            id: event._id,
+            coverImage: event.coverImage || "https://placehold.co/640x360?text=Event",
+            society: event.society || event.organizer?.fullName || "Campus Society",
+            title: event.title,
+            description: event.description || "",
+            eventType: event.eventType || "General",
+            tags: event.tags || [],
+            status: event.status || "upcoming",
+            displayDate: event.date ? new Date(event.date).toLocaleDateString() : "TBD",
+            time: event.date ? new Date(event.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "TBD",
+            venue: event.venue || "TBD",
+            capacityPercent: event.capacity ? Math.round(((event.registrationCount || 0) / event.capacity) * 100) : 0,
+            likes: event.likes || 0,
+            comments: event.comments || 0
+          }))
+        );
+      } catch (error) {
+        setLoadError(error.message || "Failed to load events");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadEvents();
+  }, [query]);
 
   const filteredEvents = useMemo(() => {
     return events.filter((event) => {
@@ -132,7 +170,16 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {filteredEvents.length === 0 ? (
+      {loading ? (
+        <section className="empty-page-state">
+          <h2>Loading events...</h2>
+        </section>
+      ) : loadError ? (
+        <section className="empty-page-state">
+          <h2>Could not load events</h2>
+          <p>{loadError}</p>
+        </section>
+      ) : filteredEvents.length === 0 ? (
         <section className="empty-page-state">
           <h2>No events found</h2>
           <p>Try another keyword or relax a filter to see more results.</p>
