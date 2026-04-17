@@ -38,7 +38,7 @@ export default function AppLayout() {
           navigate(resolveNotificationTarget(item));
         }}
       />
-      <main className="page-wrap">
+      <main className="page-wrap page-wrap--home">
         <Outlet />
       </main>
     </div>
