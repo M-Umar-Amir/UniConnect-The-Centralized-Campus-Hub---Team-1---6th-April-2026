@@ -1,16 +1,25 @@
+import StartupCard from "../components/StartupCard";
+import { startupItems } from "../data/mockAppData";
+
 export default function StartupsPage() {
   return (
-    <div className="page-container">
-      <h1>🚀 Startups</h1>
+    <section className="page-container">
       <div className="content-card">
-        <h2>Demo Pitch</h2>
-        <p><strong>Founder:</strong> Zain Abbas</p>
-        <p><strong>Founded:</strong> March 2026</p>
-        <p><strong>Description:</strong> An innovative platform connecting students with startup opportunities and mentorship from experienced entrepreneurs.</p>
-        <p><strong>Stage:</strong> Pre-seed</p>
-        <p><strong>Looking For:</strong> Co-founders, Developers</p>
-        <button className="btn-primary">Learn More</button>
+        <p className="section-kicker">Startups</p>
+        <h1>Student ventures building on campus</h1>
+        <p>Explore early products, the people behind them, and the roles they are currently hiring for.</p>
       </div>
-    </div>
+
+      <div className="search-results-grid">
+        {startupItems.map((startup) => (
+          <StartupCard
+            key={startup.id}
+            startup={startup}
+            onLike={() => Promise.resolve()}
+            onViewPitch={() => {}}
+          />
+        ))}
+      </div>
+    </section>
   );
 }
